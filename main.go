@@ -4,11 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/natanfds/observatron/app/services"
 	"github.com/natanfds/observatron/utils"
 )
 
 func startMain() error {
 	err := utils.ENV.Load()
+	if err != nil {
+		return err
+	}
+
+	err = services.StartDatabase()
 	if err != nil {
 		return err
 	}
