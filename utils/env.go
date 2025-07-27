@@ -6,7 +6,9 @@ import (
 )
 
 type envStruct struct {
-	ApiPort string `env:"API_PORT"`
+	ApiPort    string `env:"API_PORT,required"`
+	WebhookURL string `env:"WEBHOOK_URL,required"`
+	AppName    string `env:"APP_NAME,required"`
 }
 
 func (e *envStruct) Load() error {

@@ -7,10 +7,10 @@ import (
 	"github.com/natanfds/observatron/utils"
 )
 
-func main() {
+func startMain() error {
 	err := utils.ENV.Load()
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 
 	httpServer := http.NewServeMux()
@@ -26,7 +26,18 @@ func main() {
 	fmt.Println("Server running on port" + utils.ENV.ApiPort)
 	err = server.ListenAndServe()
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+	return nil
+}
 
+func main() {
+	err := startMain()
+	if err != nil {
+		send_err := utils.SendToWebhook("Error at startup **" + utils.ENV.AppName + "**\n" + err.Error())
+		fmt.Println(send_err)
+		if send_err != nil {
+			panic(send_err)
+		}
+	}
 }
