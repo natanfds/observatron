@@ -3,12 +3,19 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/natanfds/observatron/utils"
 )
 
 func main() {
+	err := utils.ENV.Load()
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	httpServer := http.NewServeMux()
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    utils.ENV.ApiPort,
 		Handler: httpServer,
 	}
 
@@ -16,8 +23,8 @@ func main() {
 		fmt.Fprintf(w, "🎪")
 	})
 
-	fmt.Println("Server running on port 8080")
-	err := server.ListenAndServe()
+	fmt.Println("Server running on port" + utils.ENV.ApiPort)
+	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
 	}
