@@ -16,6 +16,9 @@ type DiscordWebhookSender struct {
 	Url string
 }
 
+/*
+Função para enviar mensagens para o webhook do Discord
+*/
 func (d *DiscordWebhookSender) Send(message string) error {
 	body := &dtos.DiscordWebhookRequest{
 		Username: ENV.AppName,
@@ -52,6 +55,9 @@ func (d *DiscordWebhookSender) Send(message string) error {
 	return nil
 }
 
+/*
+Função para encaminhar mensagens para algum webhook disponível caso ocorra um erro ao subir a API
+*/
 func SendToWebhook(message string) error {
 	var webhookSender interfaces.Webhook
 	switch true {

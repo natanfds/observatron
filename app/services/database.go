@@ -5,25 +5,22 @@ import (
 	"gorm.io/gorm"
 )
 
-var DATABASE *gorm.DB
-
-var modelsToMigrate = []interface{}{}
-
-func StartDatabase() error {
+// NewDatabase - Função para inicializar o banco de dados
+// Recebe um slice de models para realizar a migração
+// Retorna um erro caso haja algum problema
+func NewDatabase(modelsToMigrate []interface{}) (*gorm.DB, error) {
 	dbConfig := sqlite.Open("./local.db")
 	db, err := gorm.Open(dbConfig, &gorm.Config{})
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	DATABASE = db
 
 	for _, model := range modelsToMigrate {
 		err = db.AutoMigrate(model)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	return nil
+	return db, nil
 }

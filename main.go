@@ -14,7 +14,7 @@ func startMain() error {
 		return err
 	}
 
-	err = services.StartDatabase()
+	_, err = services.NewDatabase([]interface{}{})
 	if err != nil {
 		return err
 	}
