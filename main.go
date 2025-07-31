@@ -4,20 +4,29 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/natanfds/observatron/app/services"
+	"github.com/natanfds/observatron/internal/user_vtt"
+	"github.com/natanfds/observatron/services"
 	"github.com/natanfds/observatron/utils"
 )
 
-func startMain() error {
+func startAPI() error {
 	err := utils.ENV.Load()
 	if err != nil {
 		return err
 	}
 
-	_, err = services.NewDatabase([]interface{}{})
+	db, err := services.NewDatabase([]interface{}{user_vtt.UserVttModel{}})
 	if err != nil {
 		return err
 	}
+
+	//declarações de services
+	userVttService := user_vtt.NewUserVttService(
+		user_vtt.NewUserVttRepo(db),
+	)
+
+	//declarações de handlers
+	userVttHandler := user_vtt.NewHandler(*userVttService)
 
 	httpServer := http.NewServeMux()
 	server := &http.Server{
@@ -29,6 +38,8 @@ func startMain() error {
 		fmt.Fprintf(w, "🎪")
 	})
 
+	httpServer.HandleFunc("/log/vtt/user", userVttHandler.UserHandle)
+
 	fmt.Println("Server running on port" + utils.ENV.ApiPort)
 	err = server.ListenAndServe()
 	if err != nil {
@@ -38,7 +49,7 @@ func startMain() error {
 }
 
 func main() {
-	err := startMain()
+	err := startAPI()
 	if err != nil {
 		send_err := utils.SendToWebhook("Error at startup **" + utils.ENV.AppName + "**\n" + err.Error())
 		fmt.Println(send_err)

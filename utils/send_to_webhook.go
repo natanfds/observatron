@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/natanfds/observatron/app/dtos"
-	"github.com/natanfds/observatron/app/interfaces"
+	"github.com/natanfds/observatron/dtos"
+	"github.com/natanfds/observatron/interfaces"
 )
 
 type DiscordWebhookSender struct {
