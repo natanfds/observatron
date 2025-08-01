@@ -11,10 +11,11 @@ type TaskQueue struct {
 	queueMaxSize int
 }
 
-func NewTaskQueue() *TaskQueue {
+func NewTaskQueue(queueMaxSize int) *TaskQueue {
 	return &TaskQueue{
-		jobQueue:   make(chan Job, 1),
-		closeQueue: make(chan bool),
+		jobQueue:     make(chan Job, queueMaxSize),
+		closeQueue:   make(chan bool),
+		queueMaxSize: queueMaxSize,
 	}
 }
 
