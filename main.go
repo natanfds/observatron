@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/natanfds/observatron/internal/task_queue"
 	"github.com/natanfds/observatron/internal/user_vtt"
 	"github.com/natanfds/observatron/services"
 	"github.com/natanfds/observatron/utils"
@@ -20,9 +21,19 @@ func startAPI() error {
 		return err
 	}
 
+	dbTaskQueue := task_queue.NewTaskQueue(1000)
+	taskQueues := []task_queue.TaskQueue{
+		*dbTaskQueue,
+	}
+
+	for _, queue := range taskQueues {
+		queue.Start()
+	}
+
 	//declarações de services
 	userVttService := user_vtt.NewUserVttService(
 		user_vtt.NewUserVttRepo(db),
+		dbTaskQueue,
 	)
 
 	//declarações de handlers
